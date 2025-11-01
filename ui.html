@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Values Generator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./styles/globals.css" rel="stylesheet" />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@radix-ui/react-checkbox@1.0.4/dist/index.umd.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.303.0/dist/umd/lucide-react.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Hide scrollbar for IE, Edge and Firefox */
+      * {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #1a1a1a;
+        padding: 16px;
+        color: #ffffff;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .header-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      .header-wrapper .main-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .header-wrapper .sub-title {
+        font-size: 8px;
+      }
+
+      .layer-note {
+        background-color: #2a2a2a;
+        color: #ffffff;
+        border: 1px solid #3a3a3a;
+        border-radius: 8px;
+        text-align: center;
+        padding: 8px;
+        font-size: 10px;
+        margin-bottom: 16px;
+      }
+
+      .form-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-inputs-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .input-type-group {
+        margin-bottom: 16px;
+      }
+
+      .input-type-group .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .input-type-group .radio-group label {
+        font-size: 12px;
+        user-select: none;
+        cursor: pointer;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 24px;
+        line-height: 1;
+      }
+
+      .input-type-group .radio-group input[type="radio"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1px solid #3a3a3a;
+        border-radius: 50%;
+        background-color: transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        margin: 0;
+      }
+
+      .input-type-group .radio-group input[type="radio"]:hover {
+        border-color: #ffffff;
+      }
+
+      .input-type-group .radio-group input[type="radio"]:checked {
+        border: 4px solid #ffffff;
+        background-color: transparent;
+      }
+
+      .case-selection-group {
+        display: none;
+        flex-direction: column;
+        margin-bottom: 16px;
+      }
+
+      .case-selection-group .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .case-selection-group > div > label {
+        font-size: 12px;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .case-selection-group .checkbox-group label {
+        font-size: 12px;
+        user-select: none;
+        cursor: pointer;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 24px;
+        line-height: 1;
+      }
+
+      .case-selection-group input[type="checkbox"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1px solid #3a3a3a;
+        border-radius: 4px;
+        background-color: transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        margin: 0;
+      }
+
+      .case-selection-group input[type="checkbox"]:hover {
+        border-color: #ffffff;
+      }
+
+      .case-selection-group input[type="checkbox"]:checked {
+        border-color: #ffffff;
+        background-color: #ffffff;
+        position: relative;
+      }
+
+      .case-selection-group input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 1px;
+        width: 5px;
+        height: 10px;
+        border: solid #1a1a1a;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      .character-length-input-group {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .character-length-input-group label {
+        font-size: 12px;
+      }
+
+      .character-length-input-group input {
+        width: 60px;
+        height: 32px;
+        padding: 8px;
+        font-size: 12px;
+        border: 1px solid #3a3a3a;
+        background-color: #2a2a2a;
+        color: #ffffff;
+        border-radius: 5px;
+        appearance: textfield;
+        -moz-appearance: textfield;
+        transition: all 0.2s ease;
+      }
+
+      .character-length-input-group input:hover {
+        border-color: #ffffff;
+      }
+
+      .character-length-input-group input:focus {
+        border-color: #ffffff;
+        outline: none;
+      }
+
+      .character-length-input-group input::-webkit-inner-spin-button,
+      .character-length-input-group input::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .character-length-input-group input::placeholder {
+        color: #666666;
+      }
+
+      .prefix-suffix-group {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .prefix-suffix-group input {
+        border-radius: 5px;
+        border: 1px solid #3a3a3a;
+        background-color: #2a2a2a;
+        color: #ffffff;
+        font-size: 12px;
+        padding: 8px;
+        width: 100%;
+        transition: all 0.2s ease;
+      }
+
+      .prefix-suffix-group input:hover {
+        border-color: #ffffff;
+      }
+
+      .prefix-suffix-group input::placeholder {
+        color: #666666;
+      }
+
+      .prefix-suffix-group input:focus {
+        border-color: #ffffff;
+        outline: none;
+      }
+
+      .pattern-input-group {
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .pattern-input-group label {
+        font-size: 12px;
+      }
+
+      .pattern-input-group input {
+        border-radius: 5px;
+        border: 1px solid #3a3a3a;
+        background-color: #2a2a2a;
+        color: #ffffff;
+        font-size: 12px;
+        padding: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .pattern-input-group input:hover {
+        border-color: #ffffff;
+      }
+
+      .pattern-input-group input::placeholder {
+        color: #666666;
+        font-size: 12px;
+      }
+
+      .pattern-input-group input:focus {
+        border-color: #ffffff;
+        outline: none;
+      }
+
+      .btn {
+        margin-top: 8px;
+        padding: 12px 24px;
+        background-color: #ffffff;
+        color: #1a1a1a;
+        border: 1px solid #ffffff;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        display: block;
+        width: 100%;
+        align-self: flex-start;
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background-color: #f0f0f0;
+        border-color: #f0f0f0;
+      }
+
+      .btn:disabled {
+        background-color: #2a2a2a;
+        color: #666666;
+        border-color: #3a3a3a;
+        cursor: not-allowed;
+      }
+
+      .error-message {
+        color: #ff4444;
+        font-size: 8px;
+        margin-top: 8px;
+        text-align: center;
+      }
+
+      .shadcn-checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        height: 24px;
+      }
+
+      .shadcn-checkbox {
+        all: unset;
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid #3a3a3a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+      }
+
+      .shadcn-checkbox:hover {
+        border-color: #ffffff;
+      }
+
+      .shadcn-checkbox:checked {
+        background-color: #ffffff;
+        border-color: #ffffff;
+      }
+
+      .shadcn-checkbox:checked::after {
+        content: "✓";
+        color: #1a1a1a;
+        font-size: 12px;
+        line-height: 1;
+      }
+
+      .shadcn-checkbox-label {
+        font-size: 14px;
+        user-select: none;
+        cursor: pointer;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+      }
+
+      .radio-wrapper {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+        height: 24px;
+        cursor: pointer;
+      }
+
+      .radio-wrapper input[type="radio"] {
+        opacity: 0;
+        position: absolute;
+      }
+
+      .radio-wrapper .radio-custom {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        margin-right: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .radio-wrapper label {
+        font-size: 14px;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .checkbox-wrapper {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+        height: 24px;
+        cursor: pointer;
+      }
+
+      .checkbox-wrapper input[type="checkbox"] {
+        opacity: 0;
+        position: absolute;
+      }
+
+      .checkbox-wrapper .checkbox-custom {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ffffff;
+        border-radius: 4px;
+        margin-right: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .checkbox-wrapper label {
+        font-size: 14px;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header-wrapper">
+        <h1 class="main-title">Random Values Generator</h1>
+      </div>
+      <div class="layer-note">
+        Select one or more text layers to generate values
+      </div>
+      <div class="form-wrapper">
+        <div class="form-inputs-wrapper">
+          <div class="input-type-group">
+            <div class="radio-group">
+              <label>
+                <input
+                  type="radio"
+                  name="generatedValueType"
+                  value="numeric"
+                  checked
+                />
+                Numeric values
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="generatedValueType"
+                  value="alphanumeric"
+                />
+                Alpha-numeric values
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="generatedValueType"
+                  value="patternbased"
+                />
+                Pattern-based values
+              </label>
+            </div>
+          </div>
+
+          <div class="case-selection-group" id="caseSelectorGroup">
+            <div class="radio-group">
+              <label>Letter Case</label>
+              <div class="checkbox-group">
+                <div class="shadcn-checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="uppercase"
+                    name="letterCase"
+                    value="uppercase"
+                    class="shadcn-checkbox"
+                    checked
+                  />
+                  <label for="uppercase" class="shadcn-checkbox-label">
+                    Uppercase
+                  </label>
+                </div>
+                <div class="shadcn-checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id="lowercase"
+                    name="letterCase"
+                    value="lowercase"
+                    class="shadcn-checkbox"
+                  />
+                  <label for="lowercase" class="shadcn-checkbox-label">
+                    Lowercase
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="character-length-input-group">
+              <label for="generatedValueCharacterLength"
+                >Number of characters</label
+              >
+              <input
+                type="number"
+                id="generatedValueCharacterLength"
+                min="1"
+                max="50"
+                value="10"
+                class=""
+              />
+            </div>
+            <div class="pattern-input-group" id="patternInputGroup">
+              <label for="patternInput">
+                Use X for alphabets and # for numbers (e.g., XX-### generates
+                AB-123):
+              </label>
+              <input
+                type="text"
+                id="patternInput"
+                placeholder="XX#-##X"
+                pattern="[X#._-]+"
+                title="Only the characters X, #, ., _, and - are allowed."
+              />
+              <div style="margin-bottom: 8px">
+                <small
+                  id="patternErrorMessage"
+                  style="
+                    color: red;
+                    display: none;
+                    margin-top: 0px;
+                    font-size: 12px;
+                  "
+                ></small>
+              </div>
+            </div>
+            <div class="prefix-suffix-group">
+              <div style="flex: 1">
+                <label
+                  for="prefixInput"
+                  style="font-size: 12px; margin-bottom: 4px; display: block"
+                >
+                  Prefix <span style="color: #666666">(optional)</span>
+                </label>
+                <input type="text" id="prefixInput" placeholder="e.g., INV-" />
+              </div>
+              <div style="flex: 1">
+                <label
+                  for="suffixInput"
+                  style="font-size: 12px; margin-bottom: 4px; display: block"
+                >
+                  Suffix <span style="color: #666666">(optional)</span>
+                </label>
+                <input type="text" id="suffixInput" placeholder="e.g., -END" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="margin-bottom: 8px">
+            <small
+              id="layerErrorMessage"
+              style="
+                color: red;
+                display: none;
+                margin-top: 0px;
+                font-size: 12px;
+              "
+            ></small>
+          </div>
+          <button id="generate-button" class="btn">Generate values</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const radioButtons = document.querySelectorAll(
+        'input[name="generatedValueType"]'
+      );
+      const patternInputGroup = document.getElementById("patternInputGroup");
+      const characterLengthGroup = document.querySelector(
+        ".character-length-input-group"
+      );
+      const patternInput = document.getElementById("patternInput");
+      const prefixInput = document.getElementById("prefixInput");
+      const suffixInput = document.getElementById("suffixInput");
+      const errorMessage = document.getElementById("errorMessage");
+      const generateButon = document.getElementById("generate-button");
+      const caseCheckboxes = document.querySelectorAll(
+        'input[name="letterCase"]'
+      );
+      const caseSelectorGroup = document.getElementById("caseSelectorGroup");
+
+      const allowedCharacters = /^[X#._-]+$/;
+
+      function showErrorMessage(message, type) {
+        const errorElement =
+          type === "pattern"
+            ? document.getElementById("patternErrorMessage")
+            : document.getElementById("layerErrorMessage");
+        errorElement.textContent = message;
+        errorElement.style.display = "inline";
+        generateButon.disabled = true;
+      }
+
+      function hideErrorMessage() {
+        document.getElementById("patternErrorMessage").textContent = "";
+        document.getElementById("patternErrorMessage").style.display = "none";
+        document.getElementById("layerErrorMessage").textContent = "";
+        document.getElementById("layerErrorMessage").style.display = "none";
+        generateButon.disabled = false;
+      }
+
+      radioButtons.forEach((radio) => {
+        radio.addEventListener("change", () => {
+          hideErrorMessage();
+
+          if (radio.value === "patternbased") {
+            patternInputGroup.style.display = "flex";
+            characterLengthGroup.style.display = "none";
+            caseSelectorGroup.style.display = "flex";
+          } else if (radio.value === "alphanumeric") {
+            patternInputGroup.style.display = "none";
+            characterLengthGroup.style.display = "flex";
+            caseSelectorGroup.style.display = "flex";
+          } else {
+            patternInputGroup.style.display = "none";
+            characterLengthGroup.style.display = "flex";
+            caseSelectorGroup.style.display = "none";
+          }
+        });
+      });
+
+      patternInput.addEventListener("input", () => {
+        if (
+          patternInput.value === "" ||
+          allowedCharacters.test(patternInput.value)
+        ) {
+          hideErrorMessage();
+        } else {
+          showErrorMessage(
+            "Only the characters X, #, ., _, and - are allowed.",
+            "pattern"
+          );
+        }
+      });
+
+      generateButon.onclick = () => {
+        const generatedValueTypeInputValue = document.querySelector(
+          'input[name="generatedValueType"]:checked'
+        ).value;
+        const generatedValueCharacterLengthInputValue = document.getElementById(
+          "generatedValueCharacterLength"
+        ).value;
+        const patternInputValue = patternInput.value;
+        const prefixValue = prefixInput.value;
+        const suffixValue = suffixInput.value;
+
+        // Get selected case options
+        const letterCaseOptions = Array.from(caseCheckboxes)
+          .filter((checkbox) => checkbox.checked)
+          .map((checkbox) => checkbox.value);
+
+        if (
+          (generatedValueTypeInputValue === "patternbased" ||
+            generatedValueTypeInputValue === "alphanumeric") &&
+          letterCaseOptions.length === 0
+        ) {
+          showErrorMessage(
+            "Please select at least one case option (uppercase or lowercase)",
+            "layer"
+          );
+          return;
+        }
+
+        if (generatedValueTypeInputValue === "patternbased") {
+          if (!allowedCharacters.test(patternInputValue)) {
+            showErrorMessage(
+              "Only the characters X, #, ., _, and - are allowed.",
+              "pattern"
+            );
+          } else {
+            hideErrorMessage();
+
+            parent.postMessage(
+              {
+                pluginMessage: {
+                  generatedValueTypeInputValue,
+                  generatedValueCharacterLengthInputValue,
+                  patternInputValue,
+                  prefixValue,
+                  suffixValue,
+                  letterCaseOptions,
+                },
+              },
+              "*"
+            );
+          }
+        } else {
+          hideErrorMessage();
+
+          parent.postMessage(
+            {
+              pluginMessage: {
+                generatedValueTypeInputValue,
+                generatedValueCharacterLengthInputValue,
+                patternInputValue,
+                prefixValue,
+                suffixValue,
+                letterCaseOptions,
+              },
+            },
+            "*"
+          );
+        }
+      };
+
+      window.onmessage = (event) => {
+        console.log({ event });
+        const message = event.data.pluginMessage;
+        if (message.type === "no-text-layer-selected") {
+          showErrorMessage(message.message, "layer");
+        } else if (message.type === "clear-error") {
+          hideErrorMessage();
+        } else {
+          hideErrorMessage();
+        }
+      };
+    </script>
+  </body>
+</html>
