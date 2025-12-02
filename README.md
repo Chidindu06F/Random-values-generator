@@ -1,40 +1,26 @@
-Below are the steps to get your plugin running. You can also find instructions at:
+This plugin is created to help you save time and speed up productivity by allowing you generate random values with just a click.
 
-  https://www.figma.com/plugin-docs/plugin-quickstart-guide/
+You can quickly create numeric, alphanumeric, or pattern-based random values.
 
-This plugin template uses Typescript and NPM, two standard tools in creating JavaScript applications.
+Whether you’re prototyping, testing input fields, or designing layouts, this plugin ensures precision and speed by generating values tailored to your needs.
 
-First, download Node.js which comes with NPM. This will allow you to install TypeScript and other
-libraries. You can find the download link here:
+How to use
 
-  https://nodejs.org/en/download/
+1. Run the Random Values generator plugin
+2. Select one or multiple text layers
+3. Select the type of values you want, enter your preferred number of character and click on ‘Generate values”
+4. The pattern-based values allow you to define the format in which random values are generated. For example, by using "X" for random alphabets and "#" for random numbers, you can control the structure of the output. Separators such as - (dash), . (dot), and \_ (underscore) can also be included to customize the format further.
+   Example Patterns:
 
-Next, install TypeScript using the command:
+X#XX## could generate D3FR53.
 
-  npm install -g typescript
+##XX#X-XX## could generate 06CO2M-FC92.
 
-Finally, in the directory of your plugin, get the latest type definitions for the plugin API by running:
+This feature allows you to create structured, randomized values for placeholders, tokens, or testing data with ease.
 
-  npm install --save-dev @figma/plugin-typings
+Use cases:
 
-If you are familiar with JavaScript, TypeScript will look very familiar. In fact, valid JavaScript code
-is already valid Typescript code.
-
-TypeScript adds type annotations to variables. This allows code editors such as Visual Studio Code
-to provide information about the Figma API while you are writing code, as well as help catch bugs
-you previously didn't notice.
-
-For more information, visit https://www.typescriptlang.org/
-
-Using TypeScript requires a compiler to convert TypeScript (code.ts) into JavaScript (code.js)
-for the browser to run.
-
-We recommend writing TypeScript code using Visual Studio code:
-
-1. Download Visual Studio Code if you haven't already: https://code.visualstudio.com/.
-2. Open this directory in Visual Studio Code.
-3. Compile TypeScript to JavaScript: Run the "Terminal > Run Build Task..." menu item,
-    then select "npm: watch". You will have to do this again every time
-    you reopen Visual Studio Code.
-
-That's it! Visual Studio Code will regenerate the JavaScript file every time you save.
+1. Populating Placeholder Data : Use the plugin to generate realistic placeholder values for prototypes, such as: Unique identifiers (e.g., serial numbers, order numbers, or product codes).
+2. Form fields like usernames, passwords, or verification codes
+3. Generate unique codes and simulate real world data: Generate pattern-based values to mimic specific real-world data, such as: License plates, invoice numbers, customer IDs, coupons, gift card, events tickets
+4. Testing UI scalability: Check how your designs handle varying lengths and types of values, ensuring components like input fields, labels, and tables remain responsive and visually consistent.
