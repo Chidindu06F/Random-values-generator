@@ -4,762 +4,1208 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Random Values Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link href="./styles/globals.css" rel="stylesheet" />
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@radix-ui/react-checkbox@1.0.4/dist/index.umd.js"></script>
-    <script src="https://unpkg.com/lucide-react@0.303.0/dist/umd/lucide-react.js"></script>
     <style>
+      /* ===================================================================
+         Design tokens — refined dark theme (Linear / Raycast inspired)
+      =================================================================== */
+      :root {
+        --bg: #0d0d0f;
+        --surface: #161618;
+        --surface-2: #1b1b1e;
+        --input: #212126;
+        --input-hover: #27272d;
+        --border: #2a2a31;
+        --border-strong: #3a3a44;
+        --text: #ececee;
+        --text-muted: #9a9aa3;
+        --text-faint: #6a6a73;
+        --accent: #2f80ff;
+        --accent-hover: #4a93ff;
+        --accent-press: #2a6fe0;
+        --accent-soft: rgba(47, 128, 255, 0.14);
+        --danger: #ff6b6b;
+        --success: #3dd68c;
+        --radius: 9px;
+        --radius-sm: 7px;
+        --radius-xs: 5px;
+
+        --font: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Inter,
+          sans-serif;
+        --mono: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+          Consolas, monospace;
+      }
+
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
 
-      html {
-        scroll-behavior: smooth;
-      }
-
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      ::-webkit-scrollbar {
-        display: none;
-      }
-
-      /* Hide scrollbar for IE, Edge and Firefox */
-      * {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
-      }
-
+      html,
       body {
-        font-family: "Inter", sans-serif;
-        background-color: #1a1a1a;
-        padding: 16px;
-        color: #ffffff;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .header-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        align-items: center;
-        text-align: center;
-        margin-bottom: 16px;
-      }
-
-      .header-wrapper .main-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #ffffff;
-      }
-
-      .header-wrapper .sub-title {
-        font-size: 8px;
-      }
-
-      .layer-note {
-        background-color: #2a2a2a;
-        color: #ffffff;
-        border: 1px solid #3a3a3a;
-        border-radius: 8px;
-        text-align: center;
-        padding: 8px;
-        font-size: 10px;
-        margin-bottom: 16px;
-      }
-
-      .form-wrapper {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .form-inputs-wrapper {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .input-type-group {
-        margin-bottom: 16px;
-      }
-
-      .input-type-group .radio-group {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .input-type-group .radio-group label {
-        font-size: 12px;
-        user-select: none;
-        cursor: pointer;
-        color: #ffffff;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        height: 24px;
-        line-height: 1;
-      }
-
-      .input-type-group .radio-group input[type="radio"] {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        border: 1px solid #3a3a3a;
-        border-radius: 50%;
-        background-color: transparent;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-        margin: 0;
-      }
-
-      .input-type-group .radio-group input[type="radio"]:hover {
-        border-color: #ffffff;
-      }
-
-      .input-type-group .radio-group input[type="radio"]:checked {
-        border: 4px solid #ffffff;
-        background-color: transparent;
-      }
-
-      .case-selection-group {
-        display: none;
-        flex-direction: column;
-        margin-bottom: 16px;
-      }
-
-      .case-selection-group .checkbox-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .case-selection-group > div > label {
-        font-size: 12px;
-        margin-bottom: 8px;
-        display: block;
-      }
-
-      .case-selection-group .checkbox-group label {
-        font-size: 12px;
-        user-select: none;
-        cursor: pointer;
-        color: #ffffff;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        height: 24px;
-        line-height: 1;
-      }
-
-      .case-selection-group input[type="checkbox"] {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        border: 1px solid #3a3a3a;
-        border-radius: 4px;
-        background-color: transparent;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-        margin: 0;
-      }
-
-      .case-selection-group input[type="checkbox"]:hover {
-        border-color: #ffffff;
-      }
-
-      .case-selection-group input[type="checkbox"]:checked {
-        border-color: #ffffff;
-        background-color: #ffffff;
-        position: relative;
-      }
-
-      .case-selection-group input[type="checkbox"]:checked::after {
-        content: "";
-        position: absolute;
-        left: 4px;
-        top: 1px;
-        width: 5px;
-        height: 10px;
-        border: solid #1a1a1a;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-
-      .character-length-input-group {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 16px;
-      }
-
-      .character-length-input-group label {
-        font-size: 12px;
-      }
-
-      .character-length-input-group input {
-        width: 60px;
-        height: 32px;
-        padding: 8px;
-        font-size: 12px;
-        border: 1px solid #3a3a3a;
-        background-color: #2a2a2a;
-        color: #ffffff;
-        border-radius: 5px;
-        appearance: textfield;
-        -moz-appearance: textfield;
-        transition: all 0.2s ease;
-      }
-
-      .character-length-input-group input:hover {
-        border-color: #ffffff;
-      }
-
-      .character-length-input-group input:focus {
-        border-color: #ffffff;
-        outline: none;
-      }
-
-      .character-length-input-group input::-webkit-inner-spin-button,
-      .character-length-input-group input::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-      .character-length-input-group input::placeholder {
-        color: #666666;
-      }
-
-      .prefix-suffix-group {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 16px;
-      }
-
-      .prefix-suffix-group input {
-        border-radius: 5px;
-        border: 1px solid #3a3a3a;
-        background-color: #2a2a2a;
-        color: #ffffff;
-        font-size: 12px;
-        padding: 8px;
-        width: 100%;
-        transition: all 0.2s ease;
-      }
-
-      .prefix-suffix-group input:hover {
-        border-color: #ffffff;
-      }
-
-      .prefix-suffix-group input::placeholder {
-        color: #666666;
-      }
-
-      .prefix-suffix-group input:focus {
-        border-color: #ffffff;
-        outline: none;
-      }
-
-      .pattern-input-group {
-        display: none;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 16px;
-      }
-
-      .pattern-input-group label {
-        font-size: 12px;
-      }
-
-      .pattern-input-group input {
-        border-radius: 5px;
-        border: 1px solid #3a3a3a;
-        background-color: #2a2a2a;
-        color: #ffffff;
-        font-size: 12px;
-        padding: 8px;
-        transition: all 0.2s ease;
-      }
-
-      .pattern-input-group input:hover {
-        border-color: #ffffff;
-      }
-
-      .pattern-input-group input::placeholder {
-        color: #666666;
-        font-size: 12px;
-      }
-
-      .pattern-input-group input:focus {
-        border-color: #ffffff;
-        outline: none;
-      }
-
-      .btn {
-        margin-top: 8px;
-        padding: 12px 24px;
-        background-color: #ffffff;
-        color: #1a1a1a;
-        border: 1px solid #ffffff;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 600;
-        display: block;
-        width: 100%;
-        align-self: flex-start;
-        transition: all 0.2s ease;
-        cursor: pointer;
-      }
-
-      .btn:hover {
-        background-color: #f0f0f0;
-        border-color: #f0f0f0;
-      }
-
-      .btn:disabled {
-        background-color: #2a2a2a;
-        color: #666666;
-        border-color: #3a3a3a;
-        cursor: not-allowed;
-      }
-
-      .error-message {
-        color: #ff4444;
-        font-size: 8px;
-        margin-top: 8px;
-        text-align: center;
-      }
-
-      .shadcn-checkbox-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-        height: 24px;
-      }
-
-      .shadcn-checkbox {
-        all: unset;
-        width: 16px;
-        height: 16px;
-        border-radius: 4px;
-        border: 1px solid #3a3a3a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-      }
-
-      .shadcn-checkbox:hover {
-        border-color: #ffffff;
-      }
-
-      .shadcn-checkbox:checked {
-        background-color: #ffffff;
-        border-color: #ffffff;
-      }
-
-      .shadcn-checkbox:checked::after {
-        content: "✓";
-        color: #1a1a1a;
-        font-size: 12px;
-        line-height: 1;
-      }
-
-      .shadcn-checkbox-label {
-        font-size: 14px;
-        user-select: none;
-        cursor: pointer;
-        color: #ffffff;
-        display: inline-flex;
-        align-items: center;
         height: 100%;
       }
 
-      .radio-wrapper {
-        display: inline-flex;
-        align-items: center;
-        position: relative;
-        height: 24px;
+      body {
+        font-family: var(--font);
+        background-color: var(--bg);
+        color: var(--text);
+        font-size: 12px;
+        line-height: 1.45;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        overflow: hidden;
+      }
+
+      /* ===================================================================
+         App shell
+      =================================================================== */
+      .app {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        padding: 16px 16px 12px;
+        gap: 14px;
+      }
+
+      .header {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .header h1 {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--text);
+      }
+
+      .header p {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--text-muted);
+      }
+
+      /* ===================================================================
+         Tabs (segmented control)
+      =================================================================== */
+      .tabs {
+        display: flex;
+        gap: 3px;
+        padding: 3px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+
+      .tab {
+        flex: 1;
+        appearance: none;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 500;
+        padding: 7px 10px;
+        border-radius: var(--radius-sm);
         cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
       }
 
-      .radio-wrapper input[type="radio"] {
-        opacity: 0;
-        position: absolute;
+      .tab:hover {
+        color: var(--text);
       }
 
-      .radio-wrapper .radio-custom {
-        width: 16px;
-        height: 16px;
-        border: 2px solid #ffffff;
+      .tab[aria-selected="true"] {
+        background: var(--input);
+        color: var(--text);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+      }
+
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      /* ===================================================================
+         Selection hint (global — both tabs write into selected layers)
+      =================================================================== */
+      .hint {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--text-muted);
+        padding: 8px 11px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        transition: border-color 0.15s ease, color 0.15s ease;
+      }
+
+      .hint .dot {
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        margin-right: 8px;
+        background: var(--text-faint);
+        flex-shrink: 0;
+        transition: background 0.15s ease;
+      }
+
+      .hint.is-active .dot {
+        background: var(--success);
+      }
+
+      .hint.is-warning {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      .hint.is-warning .dot {
+        background: var(--danger);
+      }
+
+      /* ===================================================================
+         Scrolling content + panels
+      =================================================================== */
+      .content {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        margin: 0 -4px;
+        padding: 2px 4px;
+      }
+
+      .panel {
+        display: none;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .panel.is-active {
+        display: flex;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .label {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text-muted);
+        letter-spacing: 0.01em;
+      }
+
+      .helper {
+        font-size: 11px;
+        color: var(--text-faint);
+        line-height: 1.5;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .row > * {
+        flex: 1;
+      }
+
+      /* ===================================================================
+         Segmented control (value type, range presets)
+      =================================================================== */
+      .segmented {
+        display: flex;
+        gap: 3px;
+        padding: 3px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+
+      .segmented button {
+        flex: 1;
+        appearance: none;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-family: var(--font);
+        font-size: 11.5px;
+        font-weight: 500;
+        padding: 7px 6px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+        white-space: nowrap;
+      }
+
+      .segmented button:hover {
+        color: var(--text);
+      }
+
+      .segmented button[aria-pressed="true"] {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .segmented button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      /* ===================================================================
+         Pills (multi-select: letter case)
+      =================================================================== */
+      .pills {
+        display: flex;
+        gap: 8px;
+      }
+
+      .pill {
+        flex: 1;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-      }
-
-      .radio-wrapper label {
-        font-size: 14px;
-        color: #ffffff;
-        display: inline-flex;
-        align-items: center;
-      }
-
-      .checkbox-wrapper {
-        display: inline-flex;
-        align-items: center;
-        position: relative;
-        height: 24px;
+        gap: 7px;
+        appearance: none;
+        border: 1px solid var(--border);
+        background: var(--input);
+        color: var(--text-muted);
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 500;
+        padding: 8px 10px;
+        border-radius: var(--radius-sm);
         cursor: pointer;
+        transition: all 0.15s ease;
       }
 
-      .checkbox-wrapper input[type="checkbox"] {
+      .pill:hover {
+        border-color: var(--border-strong);
+        color: var(--text);
+      }
+
+      .pill[aria-pressed="true"] {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        color: var(--text);
+      }
+
+      .pill:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      .pill .check {
+        width: 13px;
+        height: 13px;
+        border-radius: 4px;
+        border: 1.5px solid var(--border-strong);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.15s ease;
+      }
+
+      .pill[aria-pressed="true"] .check {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .pill .check svg {
         opacity: 0;
-        position: absolute;
+        transition: opacity 0.12s ease;
       }
 
-      .checkbox-wrapper .checkbox-custom {
+      .pill[aria-pressed="true"] .check svg {
+        opacity: 1;
+      }
+
+      /* ===================================================================
+         Inputs & select
+      =================================================================== */
+      .input,
+      .select {
+        width: 100%;
+        height: 34px;
+        padding: 0 11px;
+        font-family: var(--font);
+        font-size: 12.5px;
+        color: var(--text);
+        background: var(--input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+
+      .input::placeholder {
+        color: var(--text-faint);
+      }
+
+      .input:hover,
+      .select:hover {
+        border-color: var(--border-strong);
+        background: var(--input-hover);
+      }
+
+      .input:focus,
+      .select:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: var(--input-hover);
+      }
+
+      .input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      .input[type="number"]::-webkit-inner-spin-button,
+      .input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .input.is-invalid {
+        border-color: var(--danger);
+      }
+
+      .select {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239a9aa3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        padding-right: 30px;
+      }
+
+      .select option {
+        background: var(--input);
+        color: var(--text);
+      }
+
+      .input-inline {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .input-inline .label {
+        flex: 1;
+      }
+
+      .input-inline .input {
+        width: 76px;
+        flex-shrink: 0;
+      }
+
+      /* From / To window rows */
+      .window-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .window-row .select {
+        flex: 1;
+      }
+
+      .window-row .year {
+        width: 84px;
+        flex-shrink: 0;
+        text-align: center;
+      }
+
+      /* ===================================================================
+         Preview chip (date format)
+      =================================================================== */
+      .preview {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 12px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+      }
+
+      .preview .preview-label {
+        font-size: 11px;
+        color: var(--text-faint);
+        font-weight: 500;
+      }
+
+      .preview .preview-value {
+        font-family: var(--mono);
+        font-size: 12.5px;
+        color: var(--accent-hover);
+        font-weight: 500;
+      }
+
+      /* ===================================================================
+         Buttons
+      =================================================================== */
+      .btn {
+        appearance: none;
+        width: 100%;
+        height: 38px;
+        font-family: var(--font);
+        font-size: 12.5px;
+        font-weight: 600;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease,
+          opacity 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        border: 1px solid var(--accent);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        border-color: var(--accent-hover);
+      }
+
+      .btn-primary:active {
+        background: var(--accent-press);
+      }
+
+      .btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* ===================================================================
+         Inline errors
+      =================================================================== */
+      .error-text {
+        font-size: 11px;
+        color: var(--danger);
+        min-height: 14px;
+      }
+
+      .content::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .content::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 8px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+      }
+
+      .content::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      /* ===================================================================
+         Toast
+      =================================================================== */
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translate(-50%, 16px);
+        background: var(--input);
+        border: 1px solid var(--border-strong);
+        color: var(--text);
+        font-size: 11.5px;
+        font-weight: 500;
+        padding: 8px 14px;
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        z-index: 50;
+      }
+
+      .toast.is-visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      .toast.is-warning {
+        border-color: var(--danger);
+      }
+
+      .toast svg {
+        color: var(--success);
+      }
+
+      .toast.is-warning svg {
+        color: var(--danger);
+      }
+
+      /* ===================================================================
+         Resize handle
+      =================================================================== */
+      .resize-handle {
+        position: fixed;
+        right: 0;
+        bottom: 0;
         width: 16px;
         height: 16px;
-        border: 2px solid #ffffff;
-        border-radius: 4px;
-        margin-right: 8px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        cursor: nwse-resize;
+        z-index: 40;
+        color: var(--text-faint);
       }
 
-      .checkbox-wrapper label {
-        font-size: 14px;
-        color: #ffffff;
-        display: inline-flex;
-        align-items: center;
-        line-height: 1;
+      .resize-handle svg {
+        position: absolute;
+        right: 2px;
+        bottom: 2px;
+      }
+
+      .hidden {
+        display: none !important;
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header-wrapper">
-        <h1 class="main-title">Random Values Generator</h1>
+    <div class="app">
+      <header class="header">
+        <h1>Random Values Generator</h1>
+        <p>Generate random values and dates instantly.</p>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="Generator type">
+        <button
+          class="tab"
+          role="tab"
+          id="tab-values"
+          data-tab="values"
+          aria-selected="true"
+          aria-controls="panel-values"
+        >
+          Values
+        </button>
+        <button
+          class="tab"
+          role="tab"
+          id="tab-dates"
+          data-tab="dates"
+          aria-selected="false"
+          aria-controls="panel-dates"
+        >
+          Dates
+        </button>
       </div>
-      <div class="layer-note">
-        Select one or more text layers to generate values
+
+      <div class="hint" id="selectionHint">
+        <span class="dot"></span>
+        <span id="selectionHintText">Select one or more text layers to generate into.</span>
       </div>
-      <div class="form-wrapper">
-        <div class="form-inputs-wrapper">
-          <div class="input-type-group">
-            <div class="radio-group">
-              <label>
-                <input
-                  type="radio"
-                  name="generatedValueType"
-                  value="numeric"
-                  checked
-                />
-                Numeric values
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="generatedValueType"
-                  value="alphanumeric"
-                />
-                Alpha-numeric values
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="generatedValueType"
-                  value="patternbased"
-                />
-                Pattern-based values
-              </label>
+
+      <div class="content">
+        <!-- =========================== VALUES =========================== -->
+        <section
+          class="panel is-active"
+          id="panel-values"
+          role="tabpanel"
+          aria-labelledby="tab-values"
+        >
+          <div class="field">
+            <span class="label">Value type</span>
+            <div class="segmented" id="valueType" role="group" aria-label="Value type">
+              <button type="button" data-value="numeric" aria-pressed="true">
+                Numeric
+              </button>
+              <button type="button" data-value="alphanumeric" aria-pressed="false">
+                Alphanumeric
+              </button>
+              <button type="button" data-value="patternbased" aria-pressed="false">
+                Pattern
+              </button>
+            </div>
+            <span class="helper" id="valueTypeHelper">
+              Random digits only (0–9).
+            </span>
+          </div>
+
+          <div class="field hidden" id="caseField">
+            <span class="label">Letter case</span>
+            <div class="pills" id="letterCase" role="group" aria-label="Letter case">
+              <button type="button" class="pill" data-value="uppercase" aria-pressed="true">
+                <span class="check">
+                  <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+                    <path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Uppercase
+              </button>
+              <button type="button" class="pill" data-value="lowercase" aria-pressed="false">
+                <span class="check">
+                  <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+                    <path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Lowercase
+              </button>
             </div>
           </div>
 
-          <div class="case-selection-group" id="caseSelectorGroup">
-            <div class="radio-group">
-              <label>Letter Case</label>
-              <div class="checkbox-group">
-                <div class="shadcn-checkbox-wrapper">
-                  <input
-                    type="checkbox"
-                    id="uppercase"
-                    name="letterCase"
-                    value="uppercase"
-                    class="shadcn-checkbox"
-                    checked
-                  />
-                  <label for="uppercase" class="shadcn-checkbox-label">
-                    Uppercase
-                  </label>
-                </div>
-                <div class="shadcn-checkbox-wrapper">
-                  <input
-                    type="checkbox"
-                    id="lowercase"
-                    name="letterCase"
-                    value="lowercase"
-                    class="shadcn-checkbox"
-                  />
-                  <label for="lowercase" class="shadcn-checkbox-label">
-                    Lowercase
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="character-length-input-group">
-              <label for="generatedValueCharacterLength"
-                >Number of characters</label
-              >
+          <div class="field" id="lengthField">
+            <div class="input-inline">
+              <label class="label" for="charLength">Number of characters</label>
               <input
+                class="input"
                 type="number"
-                id="generatedValueCharacterLength"
+                id="charLength"
                 min="1"
                 max="50"
                 value="10"
-                class=""
               />
             </div>
-            <div class="pattern-input-group" id="patternInputGroup">
-              <label for="patternInput">
-                Use X for alphabets and # for numbers (e.g., XX-### generates
-                AB-123):
-              </label>
+          </div>
+
+          <div class="field hidden" id="patternField">
+            <label class="label" for="patternInput">Pattern</label>
+            <input
+              class="input"
+              type="text"
+              id="patternInput"
+              placeholder="XX#-##X"
+              value="XX#-##X"
+            />
+            <span class="helper">
+              Use <strong>X</strong> for letters and <strong>#</strong> for
+              numbers. Separators <strong>- . _</strong> are kept as-is
+              (e.g.&nbsp;XX-### → AB-123).
+            </span>
+            <span class="error-text" id="patternError"></span>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label class="label" for="prefixInput">Prefix (optional)</label>
+              <input class="input" type="text" id="prefixInput" placeholder="INV-" />
+            </div>
+            <div class="field">
+              <label class="label" for="suffixInput">Suffix (optional)</label>
+              <input class="input" type="text" id="suffixInput" placeholder="-END" />
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="generateValues">Generate values</button>
+        </section>
+
+        <!-- =========================== DATES =========================== -->
+        <section
+          class="panel"
+          id="panel-dates"
+          role="tabpanel"
+          aria-labelledby="tab-dates"
+        >
+          <div class="field">
+            <label class="label" for="dateFormat">Date format</label>
+            <select class="select" id="dateFormat">
+              <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+              <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+              <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+              <option value="DD-MM-YYYY">DD-MM-YYYY</option>
+              <option value="MMM DD, YYYY">MMM DD, YYYY</option>
+              <option value="Month DD, YYYY">Month DD, YYYY</option>
+            </select>
+            <div class="preview">
+              <span class="preview-label">Preview</span>
+              <span class="preview-value" id="datePreview">2026-06-17</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label">From</span>
+            <div class="window-row">
+              <select class="select" id="fromMonth" aria-label="From month"></select>
               <input
-                type="text"
-                id="patternInput"
-                placeholder="XX#-##X"
-                pattern="[X#._-]+"
-                title="Only the characters X, #, ., _, and - are allowed."
+                class="input year"
+                type="number"
+                id="fromYear"
+                aria-label="From year"
+                min="1"
+                max="9999"
               />
-              <div style="margin-bottom: 8px">
-                <small
-                  id="patternErrorMessage"
-                  style="
-                    color: red;
-                    display: none;
-                    margin-top: 0px;
-                    font-size: 12px;
-                  "
-                ></small>
-              </div>
-            </div>
-            <div class="prefix-suffix-group">
-              <div style="flex: 1">
-                <label
-                  for="prefixInput"
-                  style="font-size: 12px; margin-bottom: 4px; display: block"
-                >
-                  Prefix <span style="color: #666666">(optional)</span>
-                </label>
-                <input type="text" id="prefixInput" placeholder="e.g., INV-" />
-              </div>
-              <div style="flex: 1">
-                <label
-                  for="suffixInput"
-                  style="font-size: 12px; margin-bottom: 4px; display: block"
-                >
-                  Suffix <span style="color: #666666">(optional)</span>
-                </label>
-                <input type="text" id="suffixInput" placeholder="e.g., -END" />
-              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <div style="margin-bottom: 8px">
-            <small
-              id="layerErrorMessage"
-              style="
-                color: red;
-                display: none;
-                margin-top: 0px;
-                font-size: 12px;
-              "
-            ></small>
+
+          <div class="field">
+            <span class="label">To</span>
+            <div class="window-row">
+              <select class="select" id="toMonth" aria-label="To month"></select>
+              <input
+                class="input year"
+                type="number"
+                id="toYear"
+                aria-label="To year"
+                min="1"
+                max="9999"
+              />
+            </div>
+            <span class="error-text" id="windowError"></span>
           </div>
-          <button id="generate-button" class="btn">Generate values</button>
-        </div>
+
+          <button class="btn btn-primary" id="generateDates">Generate dates</button>
+        </section>
       </div>
     </div>
 
+    <div class="toast" id="toast">
+      <svg id="toastIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span id="toastText"></span>
+    </div>
+
+    <div class="resize-handle" id="resizeHandle" title="Resize">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+        <circle cx="8.5" cy="8.5" r="1"></circle>
+        <circle cx="5" cy="8.5" r="1"></circle>
+        <circle cx="8.5" cy="5" r="1"></circle>
+      </svg>
+    </div>
+
     <script>
-      const radioButtons = document.querySelectorAll(
-        'input[name="generatedValueType"]'
-      );
-      const patternInputGroup = document.getElementById("patternInputGroup");
-      const characterLengthGroup = document.querySelector(
-        ".character-length-input-group"
-      );
-      const patternInput = document.getElementById("patternInput");
-      const prefixInput = document.getElementById("prefixInput");
-      const suffixInput = document.getElementById("suffixInput");
-      const errorMessage = document.getElementById("errorMessage");
-      const generateButon = document.getElementById("generate-button");
-      const caseCheckboxes = document.querySelectorAll(
-        'input[name="letterCase"]'
-      );
-      const caseSelectorGroup = document.getElementById("caseSelectorGroup");
+      "use strict";
 
-      const allowedCharacters = /^[X#._-]+$/;
+      const $ = (id) => document.getElementById(id);
 
-      function showErrorMessage(message, type) {
-        const errorElement =
-          type === "pattern"
-            ? document.getElementById("patternErrorMessage")
-            : document.getElementById("layerErrorMessage");
-        errorElement.textContent = message;
-        errorElement.style.display = "inline";
-        generateButon.disabled = true;
+      // ===================================================================
+      // Date utilities (single source of truth — preview + generation)
+      // ===================================================================
+      const MONTHS_FULL = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December",
+      ];
+      const MONTHS_SHORT = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      ];
+
+      const pad2 = (n) => (n < 10 ? "0" + n : String(n));
+
+      function isLeapYear(year) {
+        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
       }
 
-      function hideErrorMessage() {
-        document.getElementById("patternErrorMessage").textContent = "";
-        document.getElementById("patternErrorMessage").style.display = "none";
-        document.getElementById("layerErrorMessage").textContent = "";
-        document.getElementById("layerErrorMessage").style.display = "none";
-        generateButon.disabled = false;
+      function daysInMonth(year, monthIndex) {
+        const days = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        return days[monthIndex];
       }
 
-      radioButtons.forEach((radio) => {
-        radio.addEventListener("change", () => {
-          hideErrorMessage();
+      // Random, always-valid calendar date between two day-resolution bounds.
+      // Picking a timestamp on the real timeline guarantees month lengths and
+      // leap years are respected (no 2025-02-29).
+      function randomDateBetween(startDate, endDate) {
+        const t =
+          startDate.getTime() +
+          Math.random() * (endDate.getTime() - startDate.getTime());
+        const d = new Date(t);
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      }
 
-          if (radio.value === "patternbased") {
-            patternInputGroup.style.display = "flex";
-            characterLengthGroup.style.display = "none";
-            caseSelectorGroup.style.display = "flex";
-          } else if (radio.value === "alphanumeric") {
-            patternInputGroup.style.display = "none";
-            characterLengthGroup.style.display = "flex";
-            caseSelectorGroup.style.display = "flex";
-          } else {
-            patternInputGroup.style.display = "none";
-            characterLengthGroup.style.display = "flex";
-            caseSelectorGroup.style.display = "none";
-          }
+      function formatDate(date, fmt) {
+        const year = date.getFullYear();
+        const monthIndex = date.getMonth();
+        const day = date.getDate();
+        const yyyy = String(year);
+        const mm = pad2(monthIndex + 1);
+        const dd = pad2(day);
+
+        switch (fmt) {
+          case "DD/MM/YYYY":
+            return dd + "/" + mm + "/" + yyyy;
+          case "MM/DD/YYYY":
+            return mm + "/" + dd + "/" + yyyy;
+          case "DD-MM-YYYY":
+            return dd + "-" + mm + "-" + yyyy;
+          case "MMM DD, YYYY":
+            return MONTHS_SHORT[monthIndex] + " " + day + ", " + yyyy;
+          case "Month DD, YYYY":
+            return MONTHS_FULL[monthIndex] + " " + day + ", " + yyyy;
+          case "YYYY-MM-DD":
+          default:
+            return yyyy + "-" + mm + "-" + dd;
+        }
+      }
+
+      // ===================================================================
+      // Toast feedback (used for selection / validation warnings)
+      // ===================================================================
+      let toastTimer = null;
+      function showToast(message, isWarning) {
+        const toast = $("toast");
+        $("toastText").textContent = message;
+        toast.classList.toggle("is-warning", !!isWarning);
+        $("toastIcon").innerHTML = isWarning
+          ? '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+          : '<polyline points="20 6 9 17 4 12"></polyline>';
+        toast.classList.add("is-visible");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 1900);
+      }
+
+      // ===================================================================
+      // State
+      // ===================================================================
+      let currentValueType = "numeric";
+      let selectionCount = 0;
+
+      // ===================================================================
+      // Tabs
+      // ===================================================================
+      const tabs = document.querySelectorAll(".tab");
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.dataset.tab;
+          tabs.forEach((t) =>
+            t.setAttribute("aria-selected", String(t.dataset.tab === target))
+          );
+          document.querySelectorAll(".panel").forEach((panel) => {
+            panel.classList.toggle("is-active", panel.id === "panel-" + target);
+          });
         });
       });
 
-      patternInput.addEventListener("input", () => {
-        if (
-          patternInput.value === "" ||
-          allowedCharacters.test(patternInput.value)
-        ) {
-          hideErrorMessage();
+      // Single-select segmented helper
+      function wireSegmented(groupId, onChange) {
+        const group = $(groupId);
+        group.querySelectorAll("button").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            group.querySelectorAll("button").forEach((b) =>
+              b.setAttribute("aria-pressed", String(b === btn))
+            );
+            onChange(btn.dataset.value);
+          });
+        });
+      }
+
+      // ===================================================================
+      // Selection hint (shared by both tabs)
+      // ===================================================================
+      const selectionHint = $("selectionHint");
+      const selectionHintText = $("selectionHintText");
+      let warnTimer = null;
+
+      function setSelection(count) {
+        selectionCount = count;
+        selectionHint.classList.remove("is-warning");
+        if (count > 0) {
+          selectionHint.classList.add("is-active");
+          selectionHintText.textContent =
+            count + " text layer" + (count === 1 ? "" : "s") + " selected.";
         } else {
-          showErrorMessage(
-            "Only the characters X, #, ., _, and - are allowed.",
-            "pattern"
-          );
+          selectionHint.classList.remove("is-active");
+          selectionHintText.textContent =
+            "Select one or more text layers to generate into.";
+        }
+      }
+
+      function warnNoSelection() {
+        selectionHint.classList.add("is-warning");
+        selectionHint.classList.remove("is-active");
+        selectionHintText.textContent =
+          "Select at least one text layer first.";
+        showToast("Select at least one text layer", true);
+        if (warnTimer) clearTimeout(warnTimer);
+        warnTimer = setTimeout(() => setSelection(selectionCount), 2200);
+      }
+
+      // ===================================================================
+      // Values tab — controls
+      // ===================================================================
+      const caseField = $("caseField");
+      const lengthField = $("lengthField");
+      const patternField = $("patternField");
+      const valueTypeHelper = $("valueTypeHelper");
+
+      const VALUE_TYPE_HELP = {
+        numeric: "Random digits only (0–9).",
+        alphanumeric: "Random mix of letters and digits.",
+        patternbased: "Build a custom structure with X and # placeholders.",
+      };
+
+      function applyValueTypeVisibility(type) {
+        const isPattern = type === "patternbased";
+        const isAlphanumeric = type === "alphanumeric";
+        caseField.classList.toggle("hidden", !(isPattern || isAlphanumeric));
+        lengthField.classList.toggle("hidden", isPattern);
+        patternField.classList.toggle("hidden", !isPattern);
+        valueTypeHelper.textContent = VALUE_TYPE_HELP[type];
+      }
+
+      wireSegmented("valueType", (value) => {
+        currentValueType = value;
+        applyValueTypeVisibility(value);
+        clearPatternError();
+      });
+      applyValueTypeVisibility("numeric");
+
+      // Letter case (multi-select pills)
+      const letterCaseGroup = $("letterCase");
+      letterCaseGroup.querySelectorAll(".pill").forEach((pill) => {
+        pill.addEventListener("click", () => {
+          const pressed = pill.getAttribute("aria-pressed") === "true";
+          pill.setAttribute("aria-pressed", String(!pressed));
+        });
+      });
+
+      function getLetterCaseOptions() {
+        return Array.from(letterCaseGroup.querySelectorAll(".pill"))
+          .filter((p) => p.getAttribute("aria-pressed") === "true")
+          .map((p) => p.dataset.value);
+      }
+
+      // Pattern validation
+      const patternInput = $("patternInput");
+      const patternError = $("patternError");
+      const ALLOWED_PATTERN = /^[X#._\-]+$/i;
+
+      function clearPatternError() {
+        patternError.textContent = "";
+        patternInput.classList.remove("is-invalid");
+      }
+
+      patternInput.addEventListener("input", () => {
+        const value = patternInput.value;
+        if (value === "" || ALLOWED_PATTERN.test(value)) {
+          clearPatternError();
+        } else {
+          patternError.textContent = "Only X, #, ., _ and - are allowed.";
+          patternInput.classList.add("is-invalid");
         }
       });
 
-      generateButon.onclick = () => {
-        const generatedValueTypeInputValue = document.querySelector(
-          'input[name="generatedValueType"]:checked'
-        ).value;
-        const generatedValueCharacterLengthInputValue = document.getElementById(
-          "generatedValueCharacterLength"
-        ).value;
-        const patternInputValue = patternInput.value;
-        const prefixValue = prefixInput.value;
-        const suffixValue = suffixInput.value;
+      // Character length clamping
+      const charLength = $("charLength");
+      charLength.addEventListener("blur", () => {
+        let n = parseInt(charLength.value, 10);
+        if (!Number.isFinite(n) || n < 1) n = 1;
+        if (n > 50) n = 50;
+        charLength.value = String(n);
+      });
 
-        // Get selected case options
-        const letterCaseOptions = Array.from(caseCheckboxes)
-          .filter((checkbox) => checkbox.checked)
-          .map((checkbox) => checkbox.value);
-
-        if (
-          (generatedValueTypeInputValue === "patternbased" ||
-            generatedValueTypeInputValue === "alphanumeric") &&
-          letterCaseOptions.length === 0
-        ) {
-          showErrorMessage(
-            "Please select at least one case option (uppercase or lowercase)",
-            "layer"
-          );
+      $("generateValues").addEventListener("click", () => {
+        if (selectionCount === 0) {
+          warnNoSelection();
           return;
         }
 
-        if (generatedValueTypeInputValue === "patternbased") {
-          if (!allowedCharacters.test(patternInputValue)) {
-            showErrorMessage(
-              "Only the characters X, #, ., _, and - are allowed.",
-              "pattern"
-            );
-          } else {
-            hideErrorMessage();
+        const caseOptions = getLetterCaseOptions();
+        if (
+          (currentValueType === "alphanumeric" ||
+            currentValueType === "patternbased") &&
+          caseOptions.length === 0
+        ) {
+          showToast("Select at least one letter case", true);
+          return;
+        }
 
-            parent.postMessage(
-              {
-                pluginMessage: {
-                  generatedValueTypeInputValue,
-                  generatedValueCharacterLengthInputValue,
-                  patternInputValue,
-                  prefixValue,
-                  suffixValue,
-                  letterCaseOptions,
-                },
-              },
-              "*"
-            );
+        if (currentValueType === "patternbased") {
+          const value = patternInput.value;
+          if (value === "" || !ALLOWED_PATTERN.test(value)) {
+            patternError.textContent = "Enter a valid pattern using X, #, ., _ and -.";
+            patternInput.classList.add("is-invalid");
+            return;
           }
-        } else {
-          hideErrorMessage();
+        }
+        clearPatternError();
 
-          parent.postMessage(
-            {
-              pluginMessage: {
-                generatedValueTypeInputValue,
-                generatedValueCharacterLengthInputValue,
-                patternInputValue,
-                prefixValue,
-                suffixValue,
-                letterCaseOptions,
+        let length = parseInt(charLength.value, 10);
+        if (!Number.isFinite(length) || length < 1) length = 1;
+        if (length > 50) length = 50;
+
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "generate-values",
+              payload: {
+                valueType: currentValueType,
+                characterLength: length,
+                pattern: patternInput.value,
+                prefix: $("prefixInput").value,
+                suffix: $("suffixInput").value,
+                caseOptions: caseOptions,
               },
             },
-            "*"
-          );
+          },
+          "*"
+        );
+      });
+
+      // ===================================================================
+      // Dates tab — controls
+      // ===================================================================
+      const dateFormatSelect = $("dateFormat");
+      const datePreview = $("datePreview");
+      const fromMonth = $("fromMonth");
+      const fromYear = $("fromYear");
+      const toMonth = $("toMonth");
+      const toYear = $("toYear");
+      const windowError = $("windowError");
+
+      // Populate month dropdowns
+      MONTHS_FULL.forEach((name, index) => {
+        const a = document.createElement("option");
+        a.value = String(index);
+        a.textContent = name;
+        fromMonth.appendChild(a);
+        const b = a.cloneNode(true);
+        toMonth.appendChild(b);
+      });
+
+      // Sensible default window: the current calendar year.
+      const TODAY = new Date();
+      const THIS_YEAR = TODAY.getFullYear();
+      fromMonth.value = "0";
+      fromYear.value = String(THIS_YEAR);
+      toMonth.value = "11";
+      toYear.value = String(THIS_YEAR);
+
+      function updatePreview() {
+        datePreview.textContent = formatDate(new Date(), dateFormatSelect.value);
+      }
+      dateFormatSelect.addEventListener("change", updatePreview);
+      updatePreview();
+
+      // Re-validate the window whenever From / To changes.
+      [fromMonth, toMonth].forEach((el) =>
+        el.addEventListener("change", () => validateWindow(false))
+      );
+      [fromYear, toYear].forEach((el) =>
+        el.addEventListener("input", () => validateWindow(false))
+      );
+
+      function readYear(input) {
+        let n = parseInt(input.value, 10);
+        if (!Number.isFinite(n)) return null;
+        if (n < 1) n = 1;
+        if (n > 9999) n = 9999;
+        return n;
+      }
+
+      // Returns { start, end } or null (and shows an error when showError).
+      function getWindow(showError) {
+        const fy = readYear(fromYear);
+        const ty = readYear(toYear);
+        if (fy === null || ty === null) {
+          if (showError) {
+            windowError.textContent = "Enter a valid year for both From and To.";
+            (fy === null ? fromYear : toYear).classList.add("is-invalid");
+          }
+          return null;
+        }
+        const fm = parseInt(fromMonth.value, 10);
+        const tm = parseInt(toMonth.value, 10);
+        const start = new Date(fy, fm, 1, 0, 0, 0, 0);
+        const end = new Date(ty, tm, daysInMonth(ty, tm), 0, 0, 0, 0);
+        if (start.getTime() > end.getTime()) {
+          if (showError) {
+            windowError.textContent = "“From” must be on or before “To”.";
+          }
+          return null;
+        }
+        return { start: start, end: end };
+      }
+
+      function validateWindow(showError) {
+        windowError.textContent = "";
+        fromYear.classList.remove("is-invalid");
+        toYear.classList.remove("is-invalid");
+        return getWindow(showError);
+      }
+
+      $("generateDates").addEventListener("click", () => {
+        if (selectionCount === 0) {
+          warnNoSelection();
+          return;
+        }
+        const win = validateWindow(true);
+        if (!win) return;
+
+        const fmt = dateFormatSelect.value;
+        const values = [];
+        for (let i = 0; i < selectionCount; i++) {
+          values.push(formatDate(randomDateBetween(win.start, win.end), fmt));
+        }
+
+        parent.postMessage(
+          { pluginMessage: { type: "apply-dates", values: values } },
+          "*"
+        );
+      });
+
+      // ===================================================================
+      // Resize handle
+      // ===================================================================
+      let resizing = false;
+      const resizeHandle = $("resizeHandle");
+      resizeHandle.addEventListener("pointerdown", (e) => {
+        resizing = true;
+        resizeHandle.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+      window.addEventListener("pointermove", (e) => {
+        if (!resizing) return;
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "resize",
+              width: Math.round(e.clientX + 6),
+              height: Math.round(e.clientY + 6),
+            },
+          },
+          "*"
+        );
+      });
+      window.addEventListener("pointerup", (e) => {
+        if (!resizing) return;
+        resizing = false;
+        try {
+          resizeHandle.releasePointerCapture(e.pointerId);
+        } catch (err) {
+          /* ignore */
+        }
+      });
+
+      // ===================================================================
+      // Messages from the sandbox
+      // ===================================================================
+      window.onmessage = (event) => {
+        const message = event.data.pluginMessage;
+        if (!message) return;
+        if (message.type === "selection-state") {
+          setSelection(message.count || 0);
+        } else if (message.type === "no-text-layers") {
+          warnNoSelection();
         }
       };
 
-      window.onmessage = (event) => {
-        console.log({ event });
-        const message = event.data.pluginMessage;
-        if (message.type === "no-text-layer-selected") {
-          showErrorMessage(message.message, "layer");
-        } else if (message.type === "clear-error") {
-          hideErrorMessage();
-        } else {
-          hideErrorMessage();
-        }
-      };
+      parent.postMessage(
+        { pluginMessage: { type: "request-selection-state" } },
+        "*"
+      );
     </script>
   </body>
 </html>

@@ -1,26 +1,70 @@
-This plugin is created to help you save time and speed up productivity by allowing you generate random values with just a click.
+# Random Values Generator
 
-You can quickly create numeric, alphanumeric, or pattern-based random values.
+Save time and speed up your workflow by generating random values and dates with a single click. Whether you're prototyping, testing input fields, or designing layouts, this plugin produces realistic placeholder data tailored to your needs — fast.
 
-Whether you’re prototyping, testing input fields, or designing layouts, this plugin ensures precision and speed by generating values tailored to your needs.
+The plugin has two tabs: **Values** and **Dates**.
 
-How to use
+## Values
 
-1. Run the Random Values generator plugin
-2. Select one or multiple text layers
-3. Select the type of values you want, enter your preferred number of character and click on ‘Generate values”
-4. The pattern-based values allow you to define the format in which random values are generated. For example, by using "X" for random alphabets and "#" for random numbers, you can control the structure of the output. Separators such as - (dash), . (dot), and \_ (underscore) can also be included to customize the format further.
-   Example Patterns:
+Generate random values and write them straight into your selected text layers.
 
-X#XX## could generate D3FR53.
+1. Run the **Random Values Generator** plugin.
+2. Select one or more text layers.
+3. Pick a value type, configure the options, and click **Generate values**.
+4. Each selected layer is filled with its own freshly generated value.
 
-##XX#X-XX## could generate 06CO2M-FC92.
+Value types:
 
-This feature allows you to create structured, randomized values for placeholders, tokens, or testing data with ease.
+- **Numeric** — random digits only (e.g. `4820157396`).
+- **Alphanumeric** — a random mix of letters and digits, with selectable letter case (uppercase / lowercase).
+- **Pattern** — define the structure of the output:
+  - `X` → a random letter
+  - `#` → a random number
+  - Separators `-` (dash), `.` (dot) and `_` (underscore) are kept as-is.
 
-Use cases:
+  Example patterns: `X#XX##` → `D3FR53`, `##XX#X-XX##` → `06CO2M-FC92`.
 
-1. Populating Placeholder Data : Use the plugin to generate realistic placeholder values for prototypes, such as: Unique identifiers (e.g., serial numbers, order numbers, or product codes).
-2. Form fields like usernames, passwords, or verification codes
-3. Generate unique codes and simulate real world data: Generate pattern-based values to mimic specific real-world data, such as: License plates, invoice numbers, customer IDs, coupons, gift card, events tickets
-4. Testing UI scalability: Check how your designs handle varying lengths and types of values, ensuring components like input fields, labels, and tables remain responsive and visually consistent.
+A **Prefix** and **Suffix** can be added to any value type (e.g. `INV-`, `-END`).
+
+## Dates
+
+Generate random, always-valid calendar dates in the format and time window you need, written straight into your selected text layers.
+
+1. Open the **Dates** tab.
+2. Select one or more text layers.
+3. Choose a **date format** — a live preview updates as you change it.
+4. Set the time window with the **From** and **To** month + year pickers (From must be on or before To). Pick past years, future years, or any span you like — the window handles it all.
+5. Click **Generate dates** — each selected layer is filled with a random date from within that window.
+
+Supported formats:
+
+| Format          | Example         |
+| --------------- | --------------- |
+| `YYYY-MM-DD`    | `2026-06-17`    |
+| `DD/MM/YYYY`    | `17/06/2026`    |
+| `MM/DD/YYYY`    | `06/17/2026`    |
+| `DD-MM-YYYY`    | `17-06-2026`    |
+| `MMM DD, YYYY`  | `Jun 17, 2026`  |
+| `Month DD, YYYY`| `June 17, 2026` |
+
+All generated dates are guaranteed valid — month lengths and leap years are respected, so impossible dates such as `2025-02-29` are never produced.
+
+## Use cases
+
+- Populate placeholder data for prototypes — serial numbers, order numbers, product codes.
+- Fill form fields such as usernames, passwords, or verification codes.
+- Simulate real-world data — license plates, invoice numbers, customer IDs, coupons, gift cards, event tickets, and dates.
+- Test UI scalability by checking how components handle varying value lengths and types.
+
+## Development
+
+The plugin is built from two parts:
+
+- `code.ts` — the plugin sandbox (main thread). Compiled to `code.js` with `npm run build` (`tsc`).
+- `ui.html` — the self-contained plugin UI (HTML/CSS/JS, Geist typography, dark theme).
+
+```bash
+npm run build      # compile code.ts -> code.js
+npm run watch      # rebuild on change
+npm run lint       # lint the TypeScript sources
+```
